@@ -4,7 +4,7 @@ from typing import Dict, Type
 import json
 
 class MeasurementReader(ABC):
-    """ABC to store and extracts data and metadata from a specific single storage format, e.i.,
+    """ABC to store and extracts data and metadata from a specific storage format, e.i.,
      one technique can have many MeasurementReaders, but each format (version) should have
      its own MeasurementReader"""
     def __init__(self, *paths: Path, single_file_only=True):

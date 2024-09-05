@@ -1,1 +1,1 @@
-from readers.MST import MstPicker, MstMocReader
+from readers.MST import MstPicker, MstMocReader, MstXlsxReader
