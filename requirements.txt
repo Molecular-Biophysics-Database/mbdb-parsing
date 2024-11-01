@@ -1,8 +1,0 @@
-pandas
-openpyxl
-
-# for development
-black
-isort
-autoflake
-pytest
