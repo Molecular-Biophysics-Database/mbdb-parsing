@@ -1,7 +1,19 @@
+# python
+__pycache__
+.pytest_cache
+/dist
+*.egg-info/
+
+# virtual env
 .venv
+
+# IDE
+.DS_Store
 .vscode
 .idea
+
+# log
 *.log
-__pycache__
-.DS_Store
-.pytest_cache
+
+# non-anonymised test data
+tests/test_data/
