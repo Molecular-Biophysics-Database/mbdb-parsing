@@ -7,3 +7,9 @@ from mbdb_parsing.base import (
     has_correct_signature,
 )
 
+def test():
+    assert has_correct_signature
+
+
+
+
