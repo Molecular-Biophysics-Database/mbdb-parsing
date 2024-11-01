@@ -37,7 +37,7 @@ The processors should be placed inside FileServiceConfig(s) objects:
 from invenio_records_resources.services import FileServiceConfig
 from oarepo_runtime.services.config.service import PermissionsPresetsConfigMixin
 
-from mbdb-parsing.mst import MocProcessor, XlxsProcessor
+from mbdb_parsing.mst import MocProcessor, XlxsProcessor
 
 
 class MstFilesServiceConfig(PermissionsPresetsConfigMixin, FileServiceConfig):

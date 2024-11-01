@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mbdb-parsing"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
     "pandas",
     "openpyxl",
@@ -38,9 +38,10 @@ Homepage = "https://github.com/Molecular-Biophysics-Database/mbdb-parsing"
 Issues = "https://github.com/Molecular-Biophysics-Database/mbdb-parsing/issues"
 
 [tool.setuptools.packages.find]
-where = ["mbdb_parsing"]
+where = ["src"]
 
 [tool.pytest.ini_options]
 pythonpath = [
-  ".",
+    ".",
+    "src",
 ]
