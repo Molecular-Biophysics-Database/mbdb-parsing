@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mbdb-parsing"
-version = "0.1.1"
+version = "0.2.1"
 dependencies = [
     "pandas",
     "openpyxl",
@@ -17,7 +17,7 @@ dependencies = [
 ]
 description = "Extract metadata from raw datafiles instruments within the MBDB"
 authors = [
-    {name ="Emil Dandanell Agerschou", email = "agerschou@ibt.cas.cz"},
+    {name ="MBDB", email = "mbdb@ibt.cas.cz"},
 ]
 readme = "README.md"
 classifiers = [

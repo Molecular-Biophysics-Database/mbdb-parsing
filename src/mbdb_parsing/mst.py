@@ -20,6 +20,8 @@ xlsx_log = logging.getLogger("extract-mst-xlxs-parameters-processor")
 #
 # MST baseclass
 class MstFileProcessor(MethodFileProcessor):
+
+    @property
     def applicable_method(self) -> str:
         return "MST"
 
@@ -42,7 +44,7 @@ class MocProcessor(MstFileProcessor):
             measurements = self._create_measurements(cursor)
 
             record = file_record.record
-            record.metadata.method_specific_parameters.update(measurements)
+            record.metadata["method_specific_parameters"].update(measurements)
             commit_to_record(record)
 
         except Exception as e:
@@ -50,7 +52,7 @@ class MocProcessor(MstFileProcessor):
 
     @staticmethod
     def _make_cursor(file_record):
-        with open(file_record.openstream, "rb") as f:
+        with file_record.open_stream("rb") as f:
             db_stream = f.read()
 
         conn = sqlite3.connect(":memory:")
@@ -165,7 +167,7 @@ class XlxsProcessor(MstFileProcessor):
 
     @staticmethod
     def _get_sample_df(file_record):
-        with open(file_record.openstream, "rb") as f:
+        with file_record.open_stream("rb") as f:
             return pd.read_excel(pd.ExcelFile(f), sheet_name="RawData", header=None)
 
     def read(self, file_record) -> None:

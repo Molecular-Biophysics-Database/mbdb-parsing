@@ -7,9 +7,9 @@ from oarepo_runtime.datastreams.utils import get_record_service_for_record
 
 class MethodFileProcessor(FileProcessor):
     def has_valid_method(self, file_record) -> bool:
-        method = file_record.record.metadata.general_parameters.technique
+        method = file_record.record.metadata["general_parameters"]["technique"]
         # the method abbreviation between the brackets in the technique
-        method = re.search("\([A-Z]*\)", method).group(1)[1:-1]
+        method = re.search(r"\([A-Z]+", method).group(0)[1:]
         return method == self.applicable_method
 
     @property
@@ -32,6 +32,6 @@ def commit_to_record(record):
             uow.commit()
 
 def has_correct_signature(file_record, magic_bytes: list | tuple | set):
-    with open(file_record.openstream, "rb") as f:
+    with file_record.open_stream("rb") as f:
         signature = f.read(len(magic_bytes[0]))
     return signature in magic_bytes
