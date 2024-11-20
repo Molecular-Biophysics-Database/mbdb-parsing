@@ -36,7 +36,7 @@ class MocProcessor(MstFileProcessor):
 
     def process(self, file_record):
         try:
-            print(f"Extracting parameters from file {file_record.key}")
+            print(f"Extracting parameters from file {file_record.key} in record {file_record.record['id']}")
 
             # create in-memory copy of db
             cursor = self._make_cursor(file_record)
@@ -127,17 +127,15 @@ class MocProcessor(MstFileProcessor):
             return {}
         elif role in ("target", "ligand"):
             return {
-                role: {
-                    f"{role}s": [
-                        {
-                            "entity": {"name": annotation["Caption"]},
-                            "concentration": {
-                                "value": annotation["NumericValue"],
-                                "unit": annotation["AnnotationType"],
-                            },
-                        }
-                    ]
-                }
+                f"{role}s": [
+                    {
+                        #"entity": {"name": annotation["Caption"]},
+                        "concentration": {
+                            "value": annotation["NumericValue"],
+                            "unit": annotation["AnnotationType"],
+                        },
+                    }
+                ]
             }
         else:
             raise ValueError(f"Unknown annotation: '{role}'")
@@ -154,13 +152,17 @@ class XlxsProcessor(MstFileProcessor):
         return (
             has_correct_signature(file_record, magic_bytes)
             and self.has_valid_method(file_record)
-            and self.file_extension(file_record) == ".xlxs"
+            and self.file_extension(file_record) == ".xlsx"
         )
 
     def process(self, file_record):
         try:
             print(f"Extracting parameters from file {file_record.key}")
             measurements = self.read(file_record)
+
+            record = file_record.record
+            record.metadata["method_specific_parameters"].update(measurements)
+            commit_to_record(record)
 
         except Exception as e:
             log_exception(e, moc_log, file_record)
@@ -170,7 +172,7 @@ class XlxsProcessor(MstFileProcessor):
         with file_record.open_stream("rb") as f:
             return pd.read_excel(pd.ExcelFile(f), sheet_name="RawData", header=None)
 
-    def read(self, file_record) -> None:
+    def read(self, file_record) -> dict:
         sample_df = self._get_sample_df(file_record)
         index_identifiers = self._get_index_identifiers(sample_df)
         # clean sample_df inplace
@@ -193,6 +195,7 @@ class XlxsProcessor(MstFileProcessor):
             }
 
             self._convert(meta_df, measurements)
+        return measurements
 
     @staticmethod
     def _convert(meta_df, measurements) -> None:
@@ -212,14 +215,20 @@ class XlxsProcessor(MstFileProcessor):
                 "sample": {
                     "targets": [
                         {
-                            "entity": {"name": meta_df["Target"]},
-                            "concentration": {"value": meta_df["TargetConcentration"]},
+                         #   "entity": {"name": meta_df["Target"]},
+                            "concentration": {
+                                "value": meta_df["TargetConcentration"],
+                                "unit": "M"
+                            },
                         }
                     ],
                     "ligands": [
                         {
-                            "entity": {"name": meta_df["Ligand"]},
-                            "concentration": {"value": meta_df["LigandConcentration"]},
+                         #   "entity": {"name": meta_df["Ligand"]},
+                            "concentration": {
+                                "value": meta_df["LigandConcentration"],
+                                "unit": "M"
+                            },
                         }
                     ],
                 },
